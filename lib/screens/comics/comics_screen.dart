@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:techarrow_mobile/screens/draw/draw_screen.dart';
 
 class ComicsScreen extends StatefulWidget {
   const ComicsScreen({super.key, required this.id});
@@ -45,8 +46,13 @@ class _ComicsScreenState extends State<ComicsScreen> {
           ),
         ],
       ),
-      floatingActionButton:
-          FloatingActionButton(child: const Icon(Icons.edit), onPressed: () {}),
+      floatingActionButton: FloatingActionButton(
+          child: const Icon(Icons.edit),
+          onPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+              return DrawScreen();
+            }));
+          }),
     );
   }
 }

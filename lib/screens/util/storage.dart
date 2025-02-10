@@ -8,7 +8,7 @@ class CounterStorage {
     return directory.path;
   }
 
-  Future<File> _localFile(String path) async {
+  Future<File> localFile(String path) async {
     return File('${await _localPath}$path');
   }
 }
