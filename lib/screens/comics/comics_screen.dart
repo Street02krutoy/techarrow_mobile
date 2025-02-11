@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:techarrow_mobile/screens/draw/draw_screen.dart';
+import 'package:techarrow_mobile/screens/util/storage.dart';
 
 class ComicsScreen extends StatefulWidget {
   const ComicsScreen({super.key, required this.id});
@@ -13,6 +14,7 @@ class ComicsScreen extends StatefulWidget {
 
 class _ComicsScreenState extends State<ComicsScreen> {
   final DateFormat formatter = DateFormat('yyyy.MM.dd');
+  final Storage storage = Storage();
 
   @override
   Widget build(BuildContext context) {

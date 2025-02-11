@@ -1,8 +1,6 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:techarrow_mobile/screens/comics/comics_screen.dart';
-import 'package:techarrow_mobile/screens/util/storage.dart';
+import 'package:techarrow_mobile/screens/comics/create_comics_screen.dart';
 import 'package:techarrow_mobile/widgets/comics_card_widget.dart';
 
 class MainScreen extends StatefulWidget {
@@ -118,7 +116,9 @@ class _MainScreenState extends State<MainScreen> {
               )),
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => CreateComicsScreen()));
+          },
           child: const Icon(Icons.add),
         ));
   }
