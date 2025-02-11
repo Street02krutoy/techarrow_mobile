@@ -46,13 +46,33 @@ class _ComicsScreenState extends State<ComicsScreen> {
           ),
         ],
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       floatingActionButton: FloatingActionButton(
-          child: const Icon(Icons.edit),
+          child: const Icon(Icons.add),
           onPressed: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
               return DrawScreen();
             }));
           }),
+      bottomNavigationBar: BottomAppBar(
+        shape: const CircularNotchedRectangle(),
+        child: Row(
+          children: [
+            CircleAvatar(
+              backgroundColor: Theme.of(context).focusColor,
+              radius: 30,
+              child: IconButton(
+                  onPressed: () {}, icon: const Icon(Icons.edit, size: 30)),
+            ),
+            CircleAvatar(
+              backgroundColor: Theme.of(context).focusColor,
+              radius: 30,
+              child: IconButton(
+                  onPressed: () {}, icon: const Icon(Icons.delete, size: 30)),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
