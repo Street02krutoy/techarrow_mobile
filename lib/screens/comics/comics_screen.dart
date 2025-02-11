@@ -33,6 +33,8 @@ class _ComicsScreenState extends State<ComicsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Title ${widget.id}"),
+        automaticallyImplyLeading: false,
+        centerTitle: true,
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -58,6 +60,15 @@ class _ComicsScreenState extends State<ComicsScreen> {
         shape: const CircularNotchedRectangle(),
         child: Row(
           children: [
+            CircleAvatar(
+              backgroundColor: Theme.of(context).focusColor,
+              radius: 30,
+              child: IconButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  icon: const Icon(Icons.home, size: 30)),
+            ),
             CircleAvatar(
               backgroundColor: Theme.of(context).focusColor,
               radius: 30,
