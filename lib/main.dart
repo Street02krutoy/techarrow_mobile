@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:techarrow_mobile/screens/main/main_screen.dart';
 import 'package:techarrow_mobile/storage/storage.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  ApplicationStorage().initialize();
+  await ApplicationStorage().initialize();
   runApp(const MainApp());
 }
 

@@ -1,8 +1,8 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:techarrow_mobile/screens/comics/ui/delete_confirmation_dialog.dart';
 import 'package:techarrow_mobile/screens/draw/draw_screen.dart';
-import 'package:techarrow_mobile/screens/util/storage.dart';
 
 class ComicsScreen extends StatefulWidget {
   const ComicsScreen({super.key, required this.id});
@@ -14,7 +14,6 @@ class ComicsScreen extends StatefulWidget {
 
 class _ComicsScreenState extends State<ComicsScreen> {
   final DateFormat formatter = DateFormat('yyyy.MM.dd');
-  final Storage storage = Storage();
 
   @override
   Widget build(BuildContext context) {
@@ -50,38 +49,48 @@ class _ComicsScreenState extends State<ComicsScreen> {
           ),
         ],
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-      floatingActionButton: FloatingActionButton(
-          child: const Icon(Icons.add),
-          onPressed: () {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return DrawScreen();
-            }));
-          }),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+      // floatingActionButton:
+      //     FloatingActionButton(child: const Icon(Icons.add), onPressed: () {}),
       bottomNavigationBar: BottomAppBar(
         shape: const CircularNotchedRectangle(),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
+            // CircleAvatar(
+            //   backgroundColor: Theme.of(context).focusColor,
+            //   radius: 30,
+            //   child: IconButton(
+            //       onPressed: () {
+            //         Navigator.of(context).pop();
+            //       },
+            //       icon: const Icon(Icons.home, size: 30)),
+            // ),
             CircleAvatar(
               backgroundColor: Theme.of(context).focusColor,
               radius: 30,
               child: IconButton(
                   onPressed: () {
-                    Navigator.of(context).pop();
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (context) {
+                      return DrawScreen();
+                    }));
                   },
-                  icon: const Icon(Icons.home, size: 30)),
+                  icon: const Icon(Icons.edit, size: 30)),
             ),
             CircleAvatar(
               backgroundColor: Theme.of(context).focusColor,
               radius: 30,
               child: IconButton(
-                  onPressed: () {}, icon: const Icon(Icons.edit, size: 30)),
-            ),
-            CircleAvatar(
-              backgroundColor: Theme.of(context).focusColor,
-              radius: 30,
-              child: IconButton(
-                  onPressed: () {}, icon: const Icon(Icons.delete, size: 30)),
+                  onPressed: () {
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return DeleteConfirmationDialog()
+                              .build(context, widget.id);
+                        });
+                  },
+                  icon: const Icon(Icons.delete, size: 30)),
             ),
           ],
         ),

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:techarrow_mobile/screens/comics/comics_screen.dart';
 import 'package:techarrow_mobile/screens/main/ui/create_dialog.dart';
@@ -15,12 +17,12 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   final _scrollController = ScrollController();
 
-  late Future<List<ComicsInfo>> _future;
+  late List<ComicsInfo> _data;
 
   @override
   void initState() {
     super.initState();
-    _future = ApplicationStorage().getAllComics();
+    _data = ApplicationStorage().getAllComics();
   }
 
   @override
@@ -39,53 +41,42 @@ class _MainScreenState extends State<MainScreen> {
           title: const Text("Мои комиксы"),
         ),
         body: Center(
-          child: FutureBuilder(
-            future: _future,
-            builder: (BuildContext context,
-                AsyncSnapshot<List<ComicsInfo>> snapshot) {
-              if (!snapshot.hasData) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-              return SingleChildScrollView(
-                  controller: _scrollController,
-                  child: GridView.count(
-                    childAspectRatio: size.aspectRatio < 1
-                        ? (itemWidth / itemHeight)
-                        : (itemHeight / itemWidth),
-                    shrinkWrap: true,
-                    crossAxisCount: size.aspectRatio < 1 ? 2 : 4,
-                    mainAxisSpacing: 8,
-                    crossAxisSpacing: 8,
-                    padding: const EdgeInsets.all(3),
-                    physics: const NeverScrollableScrollPhysics(),
-                    children: snapshot.data!
-                        .map((comics) => InkWell(
-                              onTap: () {
-                                Navigator.of(context)
-                                    .push(MaterialPageRoute(builder: (context) {
-                                  return ComicsScreen(
-                                    id: comics.title,
-                                  );
-                                }));
-                              },
-                              child: ComicsCardWidget(
-                                  image: Image.asset(
-                                    "assets/preview.png",
-                                    height: itemHeight,
-                                    width: itemWidth,
-                                  ),
-                                  title: Text(
-                                    comics.title,
-                                    style: const TextStyle(
-                                        color: Colors.white, fontSize: 20.0),
-                                  )),
-                            ))
-                        .toList(),
-                  ));
-            },
-          ),
+          child: SingleChildScrollView(
+              controller: _scrollController,
+              child: GridView.count(
+                childAspectRatio: size.aspectRatio < 1
+                    ? (itemWidth / itemHeight)
+                    : (itemHeight / itemWidth),
+                shrinkWrap: true,
+                crossAxisCount: size.aspectRatio < 1 ? 2 : 4,
+                mainAxisSpacing: 8,
+                crossAxisSpacing: 8,
+                padding: const EdgeInsets.all(3),
+                physics: const NeverScrollableScrollPhysics(),
+                children: _data
+                    .map((comics) => InkWell(
+                          onTap: () {
+                            Navigator.of(context)
+                                .push(MaterialPageRoute(builder: (context) {
+                              return ComicsScreen(
+                                id: comics.title,
+                              );
+                            }));
+                          },
+                          child: ComicsCardWidget(
+                              image: Image.asset(
+                                "assets/preview.png",
+                                height: itemHeight,
+                                width: itemWidth,
+                              ),
+                              title: Text(
+                                comics.title,
+                                style: const TextStyle(
+                                    color: Colors.white, fontSize: 20.0),
+                              )),
+                        ))
+                    .toList(),
+              )),
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
@@ -93,8 +84,7 @@ class _MainScreenState extends State<MainScreen> {
                 context: context,
                 builder: (BuildContext context) {
                   return CreateDialog().build(context, onCreate: () {
-                    _future = ApplicationStorage().getAllComics();
-                    ;
+                    _data = ApplicationStorage().getAllComics();
                   });
                 });
           },

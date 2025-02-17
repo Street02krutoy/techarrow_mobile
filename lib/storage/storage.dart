@@ -11,12 +11,23 @@ class ApplicationStorage {
     return directory.path;
   }
 
+  static String _localPathSync = "";
+  static bool initialized = false;
+
   Future<File> getLocalFile(String path) async {
     return File('${await _localPath}/data/comics$path');
   }
 
   Future<Directory> getLocalDirectory(String path) async {
     return Directory('${await _localPath}/data/comics$path');
+  }
+
+  File getLocalFileSync(String path) {
+    return File('$_localPathSync/data/comics$path');
+  }
+
+  Directory getLocalDirectorySync(String path) {
+    return Directory('$_localPathSync/data/comics$path');
   }
 
   Future<void> initialize() async {
@@ -28,10 +39,13 @@ class ApplicationStorage {
     if (!(await dir.exists())) {
       dir.create();
     }
+    _localPathSync = await _localPath;
+    print(dir.path);
+    print(await getAllComics());
   }
 
   Future<void> createComics(String title) async {
-    final Directory dir = await getLocalDirectory("/$title");
+    final Directory dir = getLocalDirectorySync("/$title");
     if (await dir.exists()) {
       throw Exception("Comics alerady exists");
     }
@@ -42,16 +56,19 @@ class ApplicationStorage {
         .toJson()));
   }
 
-  Future<List<ComicsInfo>> getAllComics() async {
-    final Directory dir = await getLocalDirectory("/");
+  Future<void> deleteComics(String title) async {
+    throw "Not implemented.";
+  }
+
+  List<ComicsInfo> getAllComics() {
+    final Directory dir = getLocalDirectorySync("/");
 
     List<ComicsInfo> comicsList = List.empty(growable: true);
-    dir.list().forEach((val) async {
+    dir.listSync().forEach((val) {
       final File comicsInfo = File("${val.path}/info.json");
-      comicsList.add(
-          ComicsInfo.fromJson(json.decode(await comicsInfo.readAsString())));
+      comicsList
+          .add(ComicsInfo.fromJson(json.decode(comicsInfo.readAsStringSync())));
     });
-    print(comicsList);
     return comicsList;
   }
 }

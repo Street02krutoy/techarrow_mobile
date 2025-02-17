@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:techarrow_mobile/screens/draw/customPainter.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter/material.dart';
@@ -16,136 +17,135 @@ class DrawScreen extends StatefulWidget {
 
 class _DrawScreenState extends State<DrawScreen> {
   ComicCell _painter = ComicCell();
-  
 
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
+    List<Widget> tools = [
+      IconButton(
+        onPressed: () {
+          setState(() {
+            _painter.strokeWidth = 1;
+            _painter.curColor = Colors.black;
+            _painter.colors.last = Colors.black;
+            _painter.widths.last = 1;
+          });
+        },
+        icon: const Icon(Symbols.ink_pen),
+      ),
+      IconButton(
+        onPressed: () {
+          setState(() {
+            _markerWidth = _markerWidth;
+            _painter.strokeWidth = _markerWidth;
+            _painter.colors.last = _currentColor;
+            _painter.widths.last = _markerWidth;
+          });
+        },
+        icon: const Icon(Symbols.stylus_pencil),
+      ),
+      IconButton(
+        onPressed: () {
+          setState(() {
+            _painter.strokeWidth = _markerWidth;
+            _painter.curColor = BACKROUND_COLOR;
+            _painter.colors.last = BACKROUND_COLOR;
+            _painter.widths.last = _markerWidth;
+          });
+        },
+        icon: const Icon(Symbols.ink_eraser),
+      ),
+      IconButton(
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return ColorPickerDialog(
+                key: const Key('color_picker_dialog'),
+                currentColor: _currentColor,
+                onColorChanged: (Color color) {
+                  setState(() {
+                    _currentColor = color;
+                    _painter.curColor = color;
+                    _painter.colors.last = color;
+                  });
+                },
+              );
+            },
+          );
+        },
+        icon: const Icon(Symbols.colors),
+      ),
+      IconButton(
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return MarkerWidthDialog(
+                key: const Key('marker_width_dialog'),
+                onMarkerWidthChanged: (double strokeWidth) {
+                  setState(() {
+                    _markerWidth = strokeWidth;
+                    _painter.strokeWidth = strokeWidth;
+                    _markerWidth = strokeWidth;
+                    _painter.widths.last = strokeWidth;
+                  });
+                },
+              );
+            },
+          );
+        },
+        icon: const Icon(Symbols.width),
+      ),
+    ];
     return Scaffold(
-      body: Column(
+      appBar: width < height
+          ? AppBar(
+              title: SingleChildScrollView(
+                child: Row(children: tools),
+              ),
+            )
+          : null,
+      body: Row(
         children: [
-          GestureDetector(
-            onPanUpdate: (details) {
-              setState(() {
-                _painter.addPoint(details.localPosition);
-              });
-            },
-            onPanEnd: (details) {
-              _painter.addList();
-            },
-            child: SizedBox(
-              height: height * 0.9,
-              width: width,
-              child: CustomPaint(
-                painter: _painter,
-                size: Size(width, height * 0.9),
-                key: ValueKey(_painter.points.last.length + _painter.points.length),
+          Column(
+            children: [
+              GestureDetector(
+                onPanUpdate: (details) {
+                  setState(() {
+                    _painter.addPoint(details.localPosition);
+                  });
+                },
+                onPanEnd: (details) {
+                  _painter.addList();
+                },
+                child: SizedBox(
+                  height: height * (width > height ? 1 : 0.88),
+                  width: width,
+                  child: CustomPaint(
+                    painter: _painter,
+                    size: Size(width * (width < height ? 1 : 0.88),
+                        height * (width > height ? 1 : 0.88)),
+                    key: ValueKey(
+                        _painter.points.last.length + _painter.points.length),
+                  ),
+                ),
               ),
-            ),
+            ],
           ),
-          SizedBox(
-            height: height * 0.1,
-            width: width,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  TextButton(
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return ColorPickerDialog(
-                            key: Key('color_picker_dialog'),
-                            currentColor: _currentColor,
-                            onColorChanged: (Color color) {
-                              setState(() {
-                                _currentColor = color;
-                                _painter.curColor = color;
-                                _painter.colors.last = color;
-                              });
-                            },
-                          );
-                        },
-                      );
-                    },
-                    child: const Text('Выбрать цвет'),
+          width > height
+              ? SingleChildScrollView(
+                  child: Column(
+                    children: tools,
                   ),
-                  TextButton(
-                    onPressed: () {
-                      setState(() {
-                        _painter.strokeWidth = 1;
-                        _painter.curColor = Colors.black;
-                        _painter.colors.last = Colors.black;
-                        _painter.widths.last = 1;
-                      });
-                    },
-                    child: const Text('Карандаш'),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      setState(() {
-                        _markerWidth = _markerWidth;
-                        _painter.strokeWidth = _markerWidth;
-                        _painter.colors.last = _currentColor;
-                        _painter.widths.last = _markerWidth;
-                      });
-                    },
-                    child: const Text('Маркер'),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      setState(() {
-                        _painter.strokeWidth = _markerWidth;
-                        _painter.curColor = BACKROUND_COLOR;
-                        _painter.colors.last = BACKROUND_COLOR;
-                        _painter.widths.last = _markerWidth;
-                      });
-                    },
-                    child: const Text('Ластик'),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return MarkerWidthDialog(
-                            key: Key('marker_width_dialog'),
-                            onMarkerWidthChanged: (double strokeWidth) {
-                              setState(() {
-                                _markerWidth = strokeWidth;
-                                _painter.strokeWidth = strokeWidth;
-                                _markerWidth = strokeWidth;
-                                _painter.widths.last = strokeWidth;
-                              });
-                            },
-                          );
-                        },
-                      );
-                    },
-                    child: const Text('Толщина'),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      setState(() {
-                        _painter.returnLast();
-                      });
-                    },
-                    child: const Text('Вернуться'),
-                  ),
-                ],
-              ),
-            ),
-          ),
+                )
+              : const Text("")
         ],
       ),
     );
   }
 }
-
 
 class ColorPickerDialog extends StatelessWidget {
   final Color currentColor;
