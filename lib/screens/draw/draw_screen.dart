@@ -22,6 +22,7 @@ class _DrawScreenState extends State<DrawScreen> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
+
     List<Widget> tools = [
       IconButton(
         onPressed: () {
@@ -98,54 +99,75 @@ class _DrawScreenState extends State<DrawScreen> {
         },
         icon: const Icon(Symbols.width),
       ),
+      IconButton(
+        onPressed: () {
+          setState(() {
+            _painter.returnLast();
+          });
+        },
+        icon: const Icon(Symbols.undo),
+      ),
+      IconButton(
+        onPressed: () {},
+        icon: const Icon(Symbols.save),
+      )
     ];
+
     return Scaffold(
       appBar: width < height
           ? AppBar(
               title: SingleChildScrollView(
+                scrollDirection: Axis.horizontal, // Горизонтальная прокрутка
                 child: Row(children: tools),
               ),
             )
           : null,
       body: Row(
         children: [
-          Column(
-            children: [
-              GestureDetector(
-                onPanUpdate: (details) {
-                  setState(() {
-                    _painter.addPoint(details.localPosition);
-                  });
-                },
-                onPanEnd: (details) {
-                  _painter.addList();
-                },
-                child: SizedBox(
-                  height: height * (width > height ? 1 : 0.88),
-                  width: width,
-                  child: CustomPaint(
-                    painter: _painter,
-                    size: Size(width * (width < height ? 1 : 0.88),
-                        height * (width > height ? 1 : 0.88)),
-                    key: ValueKey(
-                        _painter.points.last.length + _painter.points.length),
+          Expanded(
+            child: Column(
+              children: [
+                GestureDetector(
+                  onPanUpdate: (details) {
+                    setState(() {
+                      _painter.addPoint(details.localPosition);
+                    });
+                  },
+                  onPanEnd: (details) {
+                    _painter.addList();
+                  },
+                  child: SizedBox(
+                    height: height * (width > height ? 1 : 0.88),
+                    width: width,
+                    child: CustomPaint(
+                      painter: _painter,
+                      size: Size(width * (width < height ? 1 : 0.88),
+                          height * (width > height ? 1 : 0.88)),
+                      key: ValueKey(
+                          _painter.points.last.length + _painter.points.length),
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           width > height
               ? SingleChildScrollView(
+                  scrollDirection: Axis.vertical, // Вертикальная прокрутка
                   child: Column(
                     children: tools,
                   ),
                 )
-              : const Text("")
+              : const SizedBox.shrink(), // Убираем пустой текст
         ],
       ),
     );
   }
 }
+
+
+
+
 
 class ColorPickerDialog extends StatelessWidget {
   final Color currentColor;
