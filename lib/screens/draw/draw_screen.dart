@@ -135,26 +135,35 @@ class _DrawScreenState extends State<DrawScreen> {
       ),
       IconButton(
         onPressed: () async {
-          ui.Picture picture = await _painter.canvasToImage();
+          ui.Picture picture = _painter.canvasToImage();
           ui.Image image = await picture.toImage(540, 960); // width и height - это размеры изображения
 
-          ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-          Uint8List pngBytes = byteData!.buffer.asUint8List();
-          int index = storage.getFilesCount(storage.getLocalDirectorySync("/$path") as String);
-          // Создаем директорию, если она не существует
-          Directory filePath = storage.getLocalDirectorySync("/$path/$index");
+          Directory filePath = storage.getLocalDirectorySync("/$path");
+
           if (!filePath.existsSync()) {
             filePath.createSync(recursive: true);
           }
-
+      
+          ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+          Uint8List pngBytes = byteData!.buffer.asUint8List();
+          int index = storage.getFilesCount("/$path");
+          print(filePath.path);
+      
+          // Создаем директорию, если она не существует
+          filePath = storage.getLocalDirectorySync("/$path/$index");
+          if (!filePath.existsSync()) {
+            filePath.createSync(recursive: true);
+          }
+      
           // Сохраняем изображение в файл
           File file = File('${filePath.path}/image.png');
           await file.writeAsBytes(pngBytes);
-
+      
           print('Image saved to ${file.path}');
         },
         icon: const Icon(Symbols.save),
       )
+
 
 
     ];
