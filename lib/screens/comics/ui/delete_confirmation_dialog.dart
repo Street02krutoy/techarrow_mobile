@@ -21,16 +21,13 @@ class DeleteConfirmationDialog {
         TextButton(
             onPressed: () {
               try {
-                ApplicationStorage().deleteComics(title).then((val) {
-                  Fluttertoast.showToast(msg: "Успешно!");
-                  if (context.mounted) Navigator.of(context).pop();
+                ApplicationStorage().deleteComics(title);
+                if (context.mounted) {
+                  Navigator.of(context).pop();
                   if (onDelete != null) onDelete();
-                }).catchError((err) {
-                  Fluttertoast.showToast(msg: err);
-
-                  if (context.mounted) Navigator.of(context).pop();
-                });
+                }
               } catch (e) {
+                print(e);
                 Fluttertoast.showToast(msg: "error $e");
                 if (context.mounted) Navigator.of(context).pop();
               }

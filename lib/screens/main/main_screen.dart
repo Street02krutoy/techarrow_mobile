@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:techarrow_mobile/screens/comics/comics_screen.dart';
 import 'package:techarrow_mobile/screens/main/ui/create_dialog.dart';
 import 'package:techarrow_mobile/storage/models/comics.dart';
@@ -40,44 +41,81 @@ class _MainScreenState extends State<MainScreen> {
         appBar: AppBar(
           title: const Text("Мои комиксы"),
         ),
-        body: Center(
-          child: SingleChildScrollView(
-              controller: _scrollController,
-              child: GridView.count(
-                childAspectRatio: size.aspectRatio < 1
-                    ? (itemWidth / itemHeight)
-                    : (itemHeight / itemWidth),
-                shrinkWrap: true,
-                crossAxisCount: size.aspectRatio < 1 ? 2 : 4,
-                mainAxisSpacing: 8,
-                crossAxisSpacing: 8,
-                padding: const EdgeInsets.all(3),
-                physics: const NeverScrollableScrollPhysics(),
-                children: _data
-                    .map((comics) => InkWell(
-                          onTap: () {
-                            Navigator.of(context)
-                                .push(MaterialPageRoute(builder: (context) {
-                              return ComicsScreen(
-                                id: comics.title,
-                              );
-                            }));
-                          },
-                          child: ComicsCardWidget(
-                              image: Image.asset(
-                                "assets/preview.png",
-                                height: itemHeight,
-                                width: itemWidth,
-                              ),
-                              title: Text(
-                                comics.title,
-                                style: const TextStyle(
-                                    color: Colors.white, fontSize: 20.0),
-                              )),
-                        ))
-                    .toList(),
-              )),
-        ),
+        body: _data.isEmpty
+            ? Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Spacer(
+                      flex: 4,
+                    ),
+                    Icon(
+                      Symbols.error,
+                      size: 100,
+                    ),
+                    Text(
+                      "Комиксов не найдено",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+                    ),
+                    TextButton(
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return CreateDialog().build(context,
+                                    onCreate: () {
+                                  _data = ApplicationStorage().getAllComics();
+                                });
+                              });
+                        },
+                        child: Text(
+                          "Создать",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 15),
+                        )),
+                    Spacer(
+                      flex: 5,
+                    )
+                  ],
+                ),
+              )
+            : SingleChildScrollView(
+                controller: _scrollController,
+                child: GridView.count(
+                  childAspectRatio: size.aspectRatio < 1
+                      ? (itemWidth / itemHeight)
+                      : (itemHeight / itemWidth),
+                  shrinkWrap: true,
+                  crossAxisCount: size.aspectRatio < 1 ? 2 : 4,
+                  mainAxisSpacing: 8,
+                  crossAxisSpacing: 8,
+                  padding: const EdgeInsets.all(3),
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: _data
+                      .map((comics) => InkWell(
+                            onTap: () {
+                              Navigator.of(context)
+                                  .push(MaterialPageRoute(builder: (context) {
+                                return ComicsScreen(
+                                  id: comics.title,
+                                );
+                              }));
+                            },
+                            child: ComicsCardWidget(
+                                image: Image.asset(
+                                  "assets/preview.png",
+                                  height: itemHeight,
+                                  width: itemWidth,
+                                ),
+                                title: Text(
+                                  comics.title,
+                                  style: const TextStyle(
+                                      color: Colors.white, fontSize: 20.0),
+                                )),
+                          ))
+                      .toList(),
+                )),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             showDialog(

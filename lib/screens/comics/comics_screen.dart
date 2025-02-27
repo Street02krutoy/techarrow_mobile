@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:techarrow_mobile/screens/comics/ui/delete_confirmation_dialog.dart';
 import 'package:techarrow_mobile/screens/draw/draw_screen.dart';
+import 'package:techarrow_mobile/screens/main/main_screen.dart';
 
 class ComicsScreen extends StatefulWidget {
   const ComicsScreen({super.key, required this.id});
@@ -86,8 +87,14 @@ class _ComicsScreenState extends State<ComicsScreen> {
                     showDialog(
                         context: context,
                         builder: (context) {
-                          return DeleteConfirmationDialog()
-                              .build(context, widget.id);
+                          return DeleteConfirmationDialog().build(
+                              context, widget.id,
+                              onDelete: () => {
+                                    Navigator.of(context).pushAndRemoveUntil(
+                                        MaterialPageRoute(builder: (context) {
+                                      return const MainScreen();
+                                    }), (route) => false)
+                                  });
                         });
                   },
                   icon: const Icon(Icons.delete, size: 30)),

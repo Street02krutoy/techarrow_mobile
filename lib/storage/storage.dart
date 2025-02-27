@@ -56,8 +56,18 @@ class ApplicationStorage {
         .toJson()));
   }
 
-  Future<void> deleteComics(String title) async {
-    throw "Not implemented.";
+  void deleteComics(String title) {
+    getLocalDirectorySync("/$title").deleteSync(recursive: true);
+  }
+
+  List<String> getComicsPages() {
+    throw "Not implemented";
+    return [];
+  }
+
+  void createPage(String title) {
+    // getLocalDirectorySync("/$title").createSync();
+    throw "Not implemented";
   }
 
   List<ComicsInfo> getAllComics() {
