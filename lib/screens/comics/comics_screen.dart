@@ -1,13 +1,15 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:techarrow_mobile/screens/comics/ui/delete_confirmation_dialog.dart';
 import 'package:techarrow_mobile/screens/draw/draw_screen.dart';
 import 'package:techarrow_mobile/screens/main/main_screen.dart';
+import 'package:techarrow_mobile/storage/storage.dart';
 
 class ComicsScreen extends StatefulWidget {
-  const ComicsScreen({super.key, required this.id});
-  final String id;
+  const ComicsScreen({super.key, required this.title});
+  final String title;
 
   @override
   State<ComicsScreen> createState() => _ComicsScreenState();
@@ -34,7 +36,7 @@ class _ComicsScreenState extends State<ComicsScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Title ${widget.id}"),
+        title: Text("Title ${widget.title}"),
         automaticallyImplyLeading: false,
         centerTitle: true,
       ),
@@ -58,24 +60,24 @@ class _ComicsScreenState extends State<ComicsScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // CircleAvatar(
-            //   backgroundColor: Theme.of(context).focusColor,
-            //   radius: 30,
-            //   child: IconButton(
-            //       onPressed: () {
-            //         Navigator.of(context).pop();
-            //       },
-            //       icon: const Icon(Icons.home, size: 30)),
-            // ),
             CircleAvatar(
               backgroundColor: Theme.of(context).focusColor,
               radius: 30,
               child: IconButton(
                   onPressed: () {
-                    Navigator.of(context)
-                        .push(MaterialPageRoute(builder: (context) {
-                      return DrawScreen();
-                    }));
+                    // Navigator.of(context)
+                    //     .push(MaterialPageRoute(builder: (context) {
+                    //   return DrawScreen(
+                    //     path: widget.title,
+                    //   );
+                    // }));
+                    try {
+                      ApplicationStorage().createComicsPage(widget.title, 1, 2);
+                      print(ApplicationStorage().getAllComics());
+                    } catch (e) {
+                      print(e);
+                      Fluttertoast.showToast(msg: "error $e");
+                    }
                   },
                   icon: const Icon(Icons.edit, size: 30)),
             ),
@@ -88,7 +90,7 @@ class _ComicsScreenState extends State<ComicsScreen> {
                         context: context,
                         builder: (context) {
                           return DeleteConfirmationDialog().build(
-                              context, widget.id,
+                              context, widget.title,
                               onDelete: () => {
                                     Navigator.of(context).pushAndRemoveUntil(
                                         MaterialPageRoute(builder: (context) {

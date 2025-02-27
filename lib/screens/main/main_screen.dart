@@ -98,7 +98,7 @@ class _MainScreenState extends State<MainScreen> {
                               Navigator.of(context)
                                   .push(MaterialPageRoute(builder: (context) {
                                 return ComicsScreen(
-                                  id: comics.title,
+                                  title: comics.title,
                                 );
                               }));
                             },

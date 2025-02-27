@@ -9,8 +9,9 @@ Color _currentColor = Colors.blue;
 double _markerWidth = 5.0;
 
 class DrawScreen extends StatefulWidget {
-  const DrawScreen({super.key});
+  const DrawScreen({super.key, required this.path});
 
+  final String path;
   @override
   State<DrawScreen> createState() => _DrawScreenState();
 }
@@ -100,19 +101,23 @@ class _DrawScreenState extends State<DrawScreen> {
         icon: const Icon(Symbols.width),
       ),
       IconButton(
-        onPressed: _painter.isUndo() ? () {
-          setState(() {
-            _painter.undoLast();
-          });
-        } : null,
+        onPressed: _painter.isUndo()
+            ? () {
+                setState(() {
+                  _painter.undoLast();
+                });
+              }
+            : null,
         icon: const Icon(Symbols.undo),
       ),
       IconButton(
-        onPressed: _painter.isRedo() ? () {
-          setState(() {
-            _painter.redoLast();
-          });
-        } : null,
+        onPressed: _painter.isRedo()
+            ? () {
+                setState(() {
+                  _painter.redoLast();
+                });
+              }
+            : null,
         icon: const Icon(Symbols.redo),
       ),
       IconButton(

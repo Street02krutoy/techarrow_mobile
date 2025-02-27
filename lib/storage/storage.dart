@@ -52,6 +52,7 @@ class ApplicationStorage {
     }
     dir.createSync();
     final File info = getLocalFileSync("/$title/info.json");
+    info.createSync();
     info.writeAsStringSync(json.encode(ComicsInfo(
             title: title, createdAt: DateTime.now(), updatedAt: DateTime.now())
         .toJson()));
@@ -62,23 +63,40 @@ class ApplicationStorage {
   }
 
   List<PageLayout> getComicsPages(String title) {
-    String path = "/$title/";
+    String path = "/$title";
     final Directory dir = getLocalDirectorySync(path);
 
     List<PageLayout> pagesList = List.empty(growable: true);
     dir.listSync().forEach((val) {
-      final File pagesInfo = File("${val.path}/layout.json");
+      if (val is! Directory) return;
+      File pagesInfo = File("${val.path}/layout.json");
+
       pagesList
           .add(PageLayout.fromJson(json.decode(pagesInfo.readAsStringSync())));
     });
     return pagesList;
   }
 
-  void createPage(String title, int height, int width) {
-    String path =
-        "/$title/${getComicsPages(getComicsPages(title).length.toString())}";
-    getLocalDirectorySync(path).createSync();
-    File("$path/layout.json").writeAsStringSync(json.encode(
+  void deleteComicsPage(String title, int index) {
+    getLocalDirectorySync("/$title/$index").deleteSync(recursive: true);
+  }
+
+  void saveComicsPage(String title, int index, PageLayout layout) {
+    String path = "/$title/$index";
+    getLocalFileSync("$path/layout.json")
+        .writeAsStringSync(json.encode(layout.toJson()));
+  }
+
+  void createComicsPage(String title, int height, int width) {
+    String path = "/$title/${getComicsPages(title).length.toString()}";
+    Directory dir = getLocalDirectorySync(path);
+    dir.createSync();
+
+    File info = getLocalFileSync("$path/layout.json");
+
+    info.createSync();
+
+    info.writeAsStringSync(json.encode(
         PageLayout(images: [], height: height, width: height).toJson()));
   }
 
@@ -88,6 +106,7 @@ class ApplicationStorage {
     List<ComicsInfo> comicsList = List.empty(growable: true);
     dir.listSync().forEach((val) {
       final File comicsInfo = File("${val.path}/info.json");
+
       comicsList
           .add(ComicsInfo.fromJson(json.decode(comicsInfo.readAsStringSync())));
     });
