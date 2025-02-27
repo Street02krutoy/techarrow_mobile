@@ -2,6 +2,8 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 class ComicCell extends CustomPainter {
+
+  final int maxReturnElements = 5;
   
   bool repaint = false;
   Color curColor = Colors.blue;
@@ -34,13 +36,13 @@ class ComicCell extends CustomPainter {
   }
 
   void initReturned(){ // удалить лишние элементы
-    if (returnedPoints.length > 5){
+    if (returnedPoints.length > maxReturnElements){
       returnedPoints.removeAt(0);
     }
-    if (returnedColors.length > 5){
+    if (returnedColors.length > maxReturnElements){
       returnedColors.removeAt(0);
     }
-    if (returnedWidths.length > 5){
+    if (returnedWidths.length > maxReturnElements){
       returnedWidths.removeAt(0);
     }
   }
@@ -105,12 +107,14 @@ class ComicCell extends CustomPainter {
   }
 
   void redoLast(){ // возвращает последнее действие
-    colors.insert(colors.length - 1, returnedColors.removeLast());
-    widths.insert(widths.length - 1, returnedWidths.removeLast());
-    points.insert(points.length - 1, returnedPoints.removeLast());
+    if (returnedPoints.isNotEmpty) {
+      colors.insert(colors.length - 1, returnedColors.removeLast());
+      widths.insert(widths.length - 1, returnedWidths.removeLast());
+      points.insert(points.length - 1, returnedPoints.removeLast());
+    }
   }
 
-  Future<Image> canvasToImage({width = 200, height = 200}) async { // я не могу сказать что оно работает, но должно
+  Future<Image> canvasToImage({width = 540, height = 960}) async { // я не могу сказать что оно работает, но должно
     Picture picture = recorder.endRecording();
     Image image = (await picture.toImage(width, height)) as Image;
     return image;

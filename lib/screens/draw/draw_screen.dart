@@ -116,7 +116,9 @@ class _DrawScreenState extends State<DrawScreen> {
         icon: const Icon(Symbols.redo),
       ),
       IconButton(
-        onPressed: () {},
+        onPressed: () {
+          // Todo save image, canvasToImage
+        },
         icon: const Icon(Symbols.save),
       )
     ];
