@@ -102,10 +102,18 @@ class _DrawScreenState extends State<DrawScreen> {
       IconButton(
         onPressed: () {
           setState(() {
-            _painter.returnLast();
+            _painter.undoLast();
           });
         },
         icon: const Icon(Symbols.undo),
+      ),
+      IconButton(
+        onPressed: () {
+          setState(() {
+            _painter.redoLast();
+          });
+        },
+        icon: const Icon(Symbols.redo),
       ),
       IconButton(
         onPressed: () {},

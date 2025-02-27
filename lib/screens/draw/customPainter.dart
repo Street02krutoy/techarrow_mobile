@@ -2,25 +2,47 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 class ComicCell extends CustomPainter {
-  List<List<Offset>> points = [[]];
+  
   bool repaint = false;
   Color curColor = Colors.blue;
   double strokeWidth = 5.0;
+
+  List<List<Offset>> points = [[]];
   List<Color> colors = [Colors.blue];
   List<double> widths = [5.0];
+
   PictureRecorder recorder = PictureRecorder();
   Canvas? curCanvas;
 
-  void addPoint(Offset point) {
+  List<List<Offset>> returnedPoints = [];
+  List<Color> returnedColors = [];
+  List<double> returnedWidths = [];
+
+  void addPoint(Offset point) { // добавить точку
     points.last.add(point);
     repaint = true;
   }
 
-  void addList() {
+  void addList() { // добавить рисунки
     colors.add(curColor);
     points.add([]);
     widths.add(strokeWidth);
+    returnedColors.clear();
+    returnedPoints.clear();
+    returnedWidths.clear();
     repaint = true;
+  }
+
+  void initReturned(){ // удалить лишние элементы
+    if (returnedPoints.length > 5){
+      returnedPoints.removeAt(0);
+    }
+    if (returnedColors.length > 5){
+      returnedColors.removeAt(0);
+    }
+    if (returnedWidths.length > 5){
+      returnedWidths.removeAt(0);
+    }
   }
 
   @override
@@ -74,12 +96,18 @@ class ComicCell extends CustomPainter {
         (oldDelegate.points.length != points.length);
   }
 
-  void returnLast() {
+  void undoLast() { // откатывет последнее действие
     if (points.length > 1) {
-      points.removeAt(points.length - 2);
-      widths.removeAt(widths.length - 2);
-      colors.removeAt(colors.length - 2);
+      returnedPoints.add(points.removeAt(points.length - 2));
+      returnedWidths.add(widths.removeAt(widths.length - 2));
+      returnedColors.add(colors.removeAt(colors.length - 2));
     }
+  }
+
+  void redoLast(){ // возвращает последнее действие
+    colors.insert(colors.length - 1, returnedColors.removeLast());
+    widths.insert(widths.length - 1, returnedWidths.removeLast());
+    points.insert(points.length - 1, returnedPoints.removeLast());
   }
 
   Future<Image> canvasToImage({width = 200, height = 200}) async { // я не могу сказать что оно работает, но должно
