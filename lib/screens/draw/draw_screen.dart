@@ -175,10 +175,6 @@ class _DrawScreenState extends State<DrawScreen> {
   }
 }
 
-
-
-
-
 class ColorPickerDialog extends StatelessWidget {
   final Color currentColor;
   final ValueChanged<Color> onColorChanged;
