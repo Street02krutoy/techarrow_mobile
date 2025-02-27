@@ -112,4 +112,9 @@ class ApplicationStorage {
     });
     return comicsList;
   }
+
+  int getFilesCount(String path) {
+    final Directory dir = getLocalDirectorySync(path);
+    return dir.listSync().length;
+  }
 }

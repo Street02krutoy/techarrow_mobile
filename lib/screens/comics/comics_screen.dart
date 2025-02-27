@@ -65,12 +65,12 @@ class _ComicsScreenState extends State<ComicsScreen> {
               radius: 30,
               child: IconButton(
                   onPressed: () {
-                    // Navigator.of(context)
-                    //     .push(MaterialPageRoute(builder: (context) {
-                    //   return DrawScreen(
-                    //     path: widget.title,
-                    //   );
-                    // }));
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (context) {
+                      return DrawScreen(
+                        path: widget.title,
+                      );
+                    }));
                     try {
                       ApplicationStorage().createComicsPage(widget.title, 1, 2);
                       print(ApplicationStorage().getAllComics());

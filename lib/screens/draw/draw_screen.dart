@@ -1,22 +1,35 @@
+import 'dart:io';
+import 'dart:typed_data';
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:techarrow_mobile/screens/draw/customPainter.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter/material.dart';
+import 'package:techarrow_mobile/storage/storage.dart';
+import 'package:image/image.dart' as img;
 
 Color BACKROUND_COLOR = Colors.white;
 Color _currentColor = Colors.blue;
 double _markerWidth = 5.0;
+ApplicationStorage storage = ApplicationStorage();
 
 class DrawScreen extends StatefulWidget {
   const DrawScreen({super.key, required this.path});
 
   final String path;
+  
   @override
-  State<DrawScreen> createState() => _DrawScreenState();
+  State<DrawScreen> createState() => _DrawScreenState(path);
 }
 
 class _DrawScreenState extends State<DrawScreen> {
+  String path = "";
+
+  _DrawScreenState(this.path);
+
+
   ComicCell _painter = ComicCell();
 
   @override
@@ -121,11 +134,29 @@ class _DrawScreenState extends State<DrawScreen> {
         icon: const Icon(Symbols.redo),
       ),
       IconButton(
-        onPressed: () {
-          // Todo save image, canvasToImage
+        onPressed: () async {
+          ui.Picture picture = await _painter.canvasToImage();
+          ui.Image image = await picture.toImage(540, 960); // width и height - это размеры изображения
+
+          ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+          Uint8List pngBytes = byteData!.buffer.asUint8List();
+          int index = storage.getFilesCount(storage.getLocalDirectorySync("/$path") as String);
+          // Создаем директорию, если она не существует
+          Directory filePath = storage.getLocalDirectorySync("/$path/$index");
+          if (!filePath.existsSync()) {
+            filePath.createSync(recursive: true);
+          }
+
+          // Сохраняем изображение в файл
+          File file = File('${filePath.path}/image.png');
+          await file.writeAsBytes(pngBytes);
+
+          print('Image saved to ${file.path}');
         },
         icon: const Icon(Symbols.save),
       )
+
+
     ];
 
     return Scaffold(

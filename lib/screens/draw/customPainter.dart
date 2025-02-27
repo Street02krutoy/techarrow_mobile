@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 class ComicCell extends CustomPainter {
 
   final int maxReturnElements = 5;
+  late Picture image;
   
   bool repaint = false;
   Color curColor = Colors.blue;
@@ -84,7 +85,8 @@ class ComicCell extends CustomPainter {
     }
 
     // Отрисовка на основной Canvas
-    canvas.drawPicture(recorder.endRecording());
+    image = recorder.endRecording();
+    canvas.drawPicture(image);
     curCanvas!.restore();
   }
 
@@ -114,9 +116,7 @@ class ComicCell extends CustomPainter {
     }
   }
 
-  Future<Image> canvasToImage({width = 540, height = 960}) async { // я не могу сказать что оно работает, но должно
-    Picture picture = recorder.endRecording();
-    Image image = (await picture.toImage(width, height)) as Image;
+  Picture canvasToImage({width = 540, height = 960}) { // я не могу сказать что оно работает, но должно
     return image;
   }
 
