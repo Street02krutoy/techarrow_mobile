@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:techarrow_mobile/storage/models/comics.dart';
+import 'package:techarrow_mobile/storage/models/page_layout.dart';
 
 class ApplicationStorage {
   Future<String> get _localPath async {
@@ -46,12 +47,12 @@ class ApplicationStorage {
 
   Future<void> createComics(String title) async {
     final Directory dir = getLocalDirectorySync("/$title");
-    if (await dir.exists()) {
+    if (dir.existsSync()) {
       throw Exception("Comics alerady exists");
     }
-    await dir.create();
-    final File info = await getLocalFile("/$title/info.json");
-    await info.writeAsString(json.encode(ComicsInfo(
+    dir.createSync();
+    final File info = getLocalFileSync("/$title/info.json");
+    info.writeAsStringSync(json.encode(ComicsInfo(
             title: title, createdAt: DateTime.now(), updatedAt: DateTime.now())
         .toJson()));
   }
@@ -60,14 +61,25 @@ class ApplicationStorage {
     getLocalDirectorySync("/$title").deleteSync(recursive: true);
   }
 
-  List<String> getComicsPages() {
-    throw "Not implemented";
-    return [];
+  List<PageLayout> getComicsPages(String title) {
+    String path = "/$title/";
+    final Directory dir = getLocalDirectorySync(path);
+
+    List<PageLayout> pagesList = List.empty(growable: true);
+    dir.listSync().forEach((val) {
+      final File pagesInfo = File("${val.path}/layout.json");
+      pagesList
+          .add(PageLayout.fromJson(json.decode(pagesInfo.readAsStringSync())));
+    });
+    return pagesList;
   }
 
-  void createPage(String title) {
-    // getLocalDirectorySync("/$title").createSync();
-    throw "Not implemented";
+  void createPage(String title, int height, int width) {
+    String path =
+        "/$title/${getComicsPages(getComicsPages(title).length.toString())}";
+    getLocalDirectorySync(path).createSync();
+    File("$path/layout.json").writeAsStringSync(json.encode(
+        PageLayout(images: [], height: height, width: height).toJson()));
   }
 
   List<ComicsInfo> getAllComics() {
