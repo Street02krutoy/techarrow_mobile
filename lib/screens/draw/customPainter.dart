@@ -119,4 +119,12 @@ class ComicCell extends CustomPainter {
     Image image = (await picture.toImage(width, height)) as Image;
     return image;
   }
+
+  bool isUndo(){
+    return points.length > 1;
+  }
+
+  bool isRedo(){
+    return returnedPoints.isNotEmpty;
+  }
 }
