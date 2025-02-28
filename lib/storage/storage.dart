@@ -117,4 +117,9 @@ class ApplicationStorage {
     final Directory dir = getLocalDirectorySync(path);
     return dir.listSync().length;
   }
+
+  List getComicsImages(String title) {
+    final Directory dir = getLocalDirectorySync("/$title/pictures");
+    return dir.listSync();
+  }
 }

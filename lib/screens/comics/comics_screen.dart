@@ -23,34 +23,36 @@ class _ComicsScreenState extends State<ComicsScreen> {
     var size = MediaQuery.of(context).size;
     final double itemHeight = size.height;
     final double itemWidth = size.width * 1.3518;
+    List<Widget> list;
 
-    List<Widget> list = List.generate(
-      100,
-      (index) => Image.asset(
-        index.isOdd ? "assets/preview.png" : "assets/preview2.png",
-        width: size.width,
-        height: size.height,
-        fit: BoxFit.fill,
-      ),
-    );
+    try {
+      list = ApplicationStorage()
+          .getComicsImages(widget.title)
+          .map((e) => Image.file(e))
+          .toList();
+    } catch (e) {
+      print(e);
+      list = [];
+    }
 
     return Scaffold(
       appBar: AppBar(
         title: Text("Title ${widget.title}"),
-        automaticallyImplyLeading: false,
         centerTitle: true,
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          CarouselSlider(
-            items: list,
-            options: CarouselOptions(
-                aspectRatio: (itemWidth / itemHeight),
-                viewportFraction: 1,
-                enableInfiniteScroll: false),
-          ),
-        ],
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CarouselSlider(
+              items: list,
+              options: CarouselOptions(
+                  aspectRatio: (itemWidth / itemHeight),
+                  viewportFraction: 1,
+                  enableInfiniteScroll: false),
+            ),
+          ],
+        ),
       ),
       // floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       // floatingActionButton:

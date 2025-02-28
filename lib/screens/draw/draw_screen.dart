@@ -19,7 +19,7 @@ class DrawScreen extends StatefulWidget {
   const DrawScreen({super.key, required this.path});
 
   final String path;
-  
+
   @override
   State<DrawScreen> createState() => _DrawScreenState(path);
 }
@@ -29,7 +29,6 @@ class _DrawScreenState extends State<DrawScreen> {
 
   _DrawScreenState(this.path);
 
-
   ComicCell _painter = ComicCell();
 
   @override
@@ -38,7 +37,8 @@ class _DrawScreenState extends State<DrawScreen> {
     double height = MediaQuery.of(context).size.height;
 
     List<Widget> tools = [
-      IconButton( // pencil button
+      IconButton(
+        // pencil button
         onPressed: () {
           setState(() {
             _painter.strokeWidth = 1;
@@ -48,7 +48,8 @@ class _DrawScreenState extends State<DrawScreen> {
         },
         icon: const Icon(Symbols.ink_pen),
       ),
-      IconButton( // marker button
+      IconButton(
+        // marker button
         onPressed: () {
           setState(() {
             _markerWidth = _markerWidth;
@@ -59,7 +60,8 @@ class _DrawScreenState extends State<DrawScreen> {
         },
         icon: const Icon(Symbols.stylus_pencil),
       ),
-      IconButton( // eraser button
+      IconButton(
+        // eraser button
         onPressed: () {
           setState(() {
             _painter.strokeWidth = _markerWidth;
@@ -70,7 +72,8 @@ class _DrawScreenState extends State<DrawScreen> {
         },
         icon: const Icon(Symbols.ink_eraser),
       ),
-      IconButton( // color picker button
+      IconButton(
+        // color picker button
         onPressed: () {
           showDialog(
             context: context,
@@ -91,7 +94,8 @@ class _DrawScreenState extends State<DrawScreen> {
         },
         icon: const Icon(Symbols.colors),
       ),
-      IconButton( // marker width button
+      IconButton(
+        // marker width button
         onPressed: () {
           showDialog(
             context: context,
@@ -112,7 +116,8 @@ class _DrawScreenState extends State<DrawScreen> {
         },
         icon: const Icon(Symbols.width),
       ),
-      IconButton( // undo button
+      IconButton(
+        // undo button
         onPressed: _painter.isUndo()
             ? () {
                 setState(() {
@@ -122,7 +127,8 @@ class _DrawScreenState extends State<DrawScreen> {
             : null,
         icon: const Icon(Symbols.undo),
       ),
-      IconButton( // redo button
+      IconButton(
+        // redo button
         onPressed: _painter.isRedo()
             ? () {
                 setState(() {
@@ -132,38 +138,40 @@ class _DrawScreenState extends State<DrawScreen> {
             : null,
         icon: const Icon(Symbols.redo),
       ),
-      IconButton( // save button
+      IconButton(
+        // save button
         onPressed: () async {
           ui.Picture picture = _painter.canvasToImage();
-          ui.Image image = await picture.toImage(540, 960); // width и height - это размеры изображения
+          ui.Image image = await picture.toImage(
+              540, 960); // width и height - это размеры изображения
 
           Directory filePath = storage.getLocalDirectorySync("/$path/pictures");
 
           if (!filePath.existsSync()) {
             filePath.createSync(recursive: true);
           }
-      
-          ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+
+          ByteData? byteData =
+              await image.toByteData(format: ui.ImageByteFormat.png);
           Uint8List pngBytes = byteData!.buffer.asUint8List();
           int index = storage.getFilesCount("/$path/pictures");
-      
+
           // Создаем директорию, если она не существует
           filePath = storage.getLocalDirectorySync("/$path/pictures");
           if (!filePath.existsSync()) {
             filePath.createSync(recursive: true);
           }
-      
+
           // Сохраняем изображение в файл
           File file = File('${filePath.path}/${index}.png');
           await file.writeAsBytes(pngBytes);
-      
+
+          Navigator.of(context).pop();
+
           print('Image saved to ${file.path}');
         },
         icon: const Icon(Symbols.save),
       )
-
-
-
     ];
 
     return Scaffold(
