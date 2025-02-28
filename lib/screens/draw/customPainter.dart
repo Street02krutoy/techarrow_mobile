@@ -27,7 +27,7 @@ class ComicCell extends CustomPainter {
   }
 
   void addList() { // добавить рисунки
-    colors.add(curColor);
+    colors.add(colors.last);
     points.add([]);
     widths.add(strokeWidth);
     returnedColors.clear();
