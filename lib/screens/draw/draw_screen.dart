@@ -38,18 +38,17 @@ class _DrawScreenState extends State<DrawScreen> {
     double height = MediaQuery.of(context).size.height;
 
     List<Widget> tools = [
-      IconButton(
+      IconButton( // pencil button
         onPressed: () {
           setState(() {
             _painter.strokeWidth = 1;
-            _painter.curColor = Colors.black;
             _painter.colors.last = Colors.black;
             _painter.widths.last = 1;
           });
         },
         icon: const Icon(Symbols.ink_pen),
       ),
-      IconButton(
+      IconButton( // marker button
         onPressed: () {
           setState(() {
             _markerWidth = _markerWidth;
@@ -60,7 +59,7 @@ class _DrawScreenState extends State<DrawScreen> {
         },
         icon: const Icon(Symbols.stylus_pencil),
       ),
-      IconButton(
+      IconButton( // eraser button
         onPressed: () {
           setState(() {
             _painter.strokeWidth = _markerWidth;
@@ -71,7 +70,7 @@ class _DrawScreenState extends State<DrawScreen> {
         },
         icon: const Icon(Symbols.ink_eraser),
       ),
-      IconButton(
+      IconButton( // color picker button
         onPressed: () {
           showDialog(
             context: context,
@@ -92,7 +91,7 @@ class _DrawScreenState extends State<DrawScreen> {
         },
         icon: const Icon(Symbols.colors),
       ),
-      IconButton(
+      IconButton( // marker width button
         onPressed: () {
           showDialog(
             context: context,
@@ -113,7 +112,7 @@ class _DrawScreenState extends State<DrawScreen> {
         },
         icon: const Icon(Symbols.width),
       ),
-      IconButton(
+      IconButton( // undo button
         onPressed: _painter.isUndo()
             ? () {
                 setState(() {
@@ -123,7 +122,7 @@ class _DrawScreenState extends State<DrawScreen> {
             : null,
         icon: const Icon(Symbols.undo),
       ),
-      IconButton(
+      IconButton( // redo button
         onPressed: _painter.isRedo()
             ? () {
                 setState(() {
@@ -133,7 +132,7 @@ class _DrawScreenState extends State<DrawScreen> {
             : null,
         icon: const Icon(Symbols.redo),
       ),
-      IconButton(
+      IconButton( // save button
         onPressed: () async {
           ui.Picture picture = _painter.canvasToImage();
           ui.Image image = await picture.toImage(540, 960); // width и height - это размеры изображения
