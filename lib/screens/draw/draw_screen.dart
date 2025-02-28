@@ -137,7 +137,7 @@ class _DrawScreenState extends State<DrawScreen> {
           ui.Picture picture = _painter.canvasToImage();
           ui.Image image = await picture.toImage(540, 960); // width и height - это размеры изображения
 
-          Directory filePath = storage.getLocalDirectorySync("/$path");
+          Directory filePath = storage.getLocalDirectorySync("/$path/pictures");
 
           if (!filePath.existsSync()) {
             filePath.createSync(recursive: true);
@@ -145,17 +145,16 @@ class _DrawScreenState extends State<DrawScreen> {
       
           ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
           Uint8List pngBytes = byteData!.buffer.asUint8List();
-          int index = storage.getFilesCount("/$path");
-          print(filePath.path);
+          int index = storage.getFilesCount("/$path/pictures");
       
           // Создаем директорию, если она не существует
-          filePath = storage.getLocalDirectorySync("/$path/$index");
+          filePath = storage.getLocalDirectorySync("/$path/pictures");
           if (!filePath.existsSync()) {
             filePath.createSync(recursive: true);
           }
       
           // Сохраняем изображение в файл
-          File file = File('${filePath.path}/image.png');
+          File file = File('${filePath.path}/${index}.png');
           await file.writeAsBytes(pngBytes);
       
           print('Image saved to ${file.path}');

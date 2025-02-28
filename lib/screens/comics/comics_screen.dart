@@ -72,7 +72,7 @@ class _ComicsScreenState extends State<ComicsScreen> {
                       );
                     }));
                     try {
-                      ApplicationStorage().createComicsPage(widget.title, 1, 2);
+                      //ApplicationStorage().createComicsPage(widget.title, 1, 2);
                       print(ApplicationStorage().getAllComics());
                     } catch (e) {
                       print(e);
