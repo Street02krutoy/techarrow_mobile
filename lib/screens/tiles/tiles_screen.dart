@@ -25,6 +25,15 @@ class _TilesScreenState extends State<TilesScreen> {
     return Image.file(imageFile);
   }
 
+  bool isImage(int index) {
+    File imageFile = ApplicationStorage()
+        .getLocalFileSync("/${widget.title}/${widget.page}/$index.png");
+    if (!imageFile.existsSync()) {
+      return false;
+    }
+    return true;
+  }
+
   Future<ui.Image> convert(Image image) {
     Completer<ui.Image> completer = Completer<ui.Image>();
     image.image.resolve(ImageConfiguration()).addListener(
@@ -56,7 +65,7 @@ class _TilesScreenState extends State<TilesScreen> {
                   if (snapshot.hasData) {
                     return DrawScreen(
                       path: "/${widget.title}/${widget.page}/$index.png",
-                      image: snapshot.data,
+                      image: isImage(index) ? snapshot.data : null,
                     );
                   } else {
                     return CircularProgressIndicator();
