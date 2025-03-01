@@ -40,6 +40,8 @@ class _ComicsScreenState extends State<ComicsScreen> {
     }
   }
 
+  int _page = 0;
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -47,8 +49,6 @@ class _ComicsScreenState extends State<ComicsScreen> {
     final double itemWidth = size.width * 1.3518;
     final CarouselSliderController _carouselController =
         CarouselSliderController();
-
-    int _page = 0;
 
     final List<Widget> previews = [];
 
@@ -107,6 +107,7 @@ class _ComicsScreenState extends State<ComicsScreen> {
                     items: previews,
                     options: CarouselOptions(
                         onPageChanged: (index, reason) {
+                          print(index);
                           setState(() {
                             _page = index;
                           });
