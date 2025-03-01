@@ -1,10 +1,10 @@
-import 'dart:ui';
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 
 class ComicCell extends CustomPainter {
 
   final int maxReturnElements = 5;
-  late Picture image;
+  late ui.Picture image;
   
   bool repaint = false;
   Color curColor = Colors.blue;
@@ -14,12 +14,13 @@ class ComicCell extends CustomPainter {
   List<Color> colors = [Colors.blue];
   List<double> widths = [5.0];
 
-  PictureRecorder recorder = PictureRecorder();
+  ui.PictureRecorder recorder = ui.PictureRecorder();
   Canvas? curCanvas;
 
   List<List<Offset>> returnedPoints = [];
   List<Color> returnedColors = [];
   List<double> returnedWidths = [];
+  ui.Image? baseImage;
 
   void addPoint(Offset point) { // добавить точку
     points.last.add(point);
@@ -51,7 +52,7 @@ class ComicCell extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     // Создаем PictureRecorder и Canvas для записи
-    recorder = PictureRecorder();
+    recorder = ui.PictureRecorder();
     curCanvas = Canvas(recorder);
 
     // Отрисовка на Canvas
@@ -67,14 +68,19 @@ class ComicCell extends CustomPainter {
       ..strokeCap = StrokeCap.round
       ..strokeWidth = strokeWidth;
 
-    curCanvas!.drawRect(
-      Rect.fromCenter(
-        center: Offset(size.width / 2, size.height / 2),
-        width: size.width,
-        height: size.height,
-      ),
-      paint,
-    );
+    if (baseImage != null){
+      curCanvas!.drawImage(baseImage!, Offset.zero, paint);
+    }
+    else{
+      curCanvas!.drawRect(
+        Rect.fromCenter(
+          center: Offset(size.width / 2, size.height / 2),
+          width: size.width,
+          height: size.height,
+        ),
+        paint,
+      );
+    }
 
     for (int i = 0; i < points.length; i++) {
       paint.color = colors[i];
@@ -100,6 +106,10 @@ class ComicCell extends CustomPainter {
         (oldDelegate.points.length != points.length);
   }
 
+  void setBaseImage(ui.Image img){
+    baseImage = img;
+  }
+
   void undoLast() { // откатывет последнее действие
     if (points.length > 1) {
       returnedPoints.add(points.removeAt(points.length - 2));
@@ -116,7 +126,7 @@ class ComicCell extends CustomPainter {
     }
   }
 
-  Picture canvasToImage({width = 540, height = 960}) { // я не могу сказать что оно работает, но должно
+  ui.Picture canvasToImage({width = 540, height = 960}) { // я не могу сказать что оно работает, но должно
     return image;
   }
 

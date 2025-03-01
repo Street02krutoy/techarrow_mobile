@@ -1,9 +1,12 @@
 import 'dart:ui';
+
 import 'package:image/image.dart' as img;
 
 class CollageCreator {
   int rowNumber = 2;
   int colNumber = 2;
+  int resultWidth = 1080;
+  int resultHeight = 1920;
   Color gridColor = const Color(0xFF000000);
   List<img.Image> images;
 
@@ -13,16 +16,17 @@ class CollageCreator {
   }
 
   img.Image createCollage({int resultWidth = 1080, int resultHeight = 1920}) {
-    if (rowNumber < 1 || colNumber < 1) {
-      throw Exception('Неверное количество рядов и колонок');
-    }
-    if (images.length != rowNumber * colNumber) {
-      throw Exception('Неверное количество изображений');
-    }
 
     // Определяем размеры каждого изображения
     int width = resultWidth ~/ colNumber;
     int height = resultHeight ~/ rowNumber;
+
+    if (rowNumber < 1 || colNumber < 1) {
+      throw Exception('Неверное количество рядов и колонок');
+    }
+    while (images.length < rowNumber * colNumber) {
+      images.add(img.Image.new(width, height));
+    }
 
     // Создаем изображение для коллажа
     img.Image collage = img.Image(resultWidth, resultHeight);
