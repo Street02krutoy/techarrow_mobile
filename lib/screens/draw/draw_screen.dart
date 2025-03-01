@@ -4,12 +4,9 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:techarrow_mobile/screens/draw/collageCreator.dart';
 import 'package:techarrow_mobile/screens/draw/customPainter.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:flutter/material.dart';
 import 'package:techarrow_mobile/storage/storage.dart';
-import 'package:image/image.dart' as img;
 
 Color BACKROUND_COLOR = Colors.white;
 Color _currentColor = Colors.blue;
@@ -17,9 +14,10 @@ double _markerWidth = 5.0;
 ApplicationStorage storage = ApplicationStorage();
 
 class DrawScreen extends StatefulWidget {
-  const DrawScreen({super.key, required this.path});
+  const DrawScreen({super.key, required this.path, this.image});
 
   final String path;
+  final ui.Image? image;
 
   @override
   State<DrawScreen> createState() => _DrawScreenState();
@@ -32,6 +30,7 @@ class _DrawScreenState extends State<DrawScreen> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
+    if (widget.image != null) _painter.setBaseImage(widget.image!);
 
     List<Widget> tools = [
       IconButton(

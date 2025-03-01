@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:io';
 
+import "dart:ui" as ui;
 import 'package:flutter/material.dart';
 import 'package:techarrow_mobile/screens/draw/draw_screen.dart';
 import 'package:techarrow_mobile/storage/models/page_layout.dart';
@@ -23,6 +25,18 @@ class _TilesScreenState extends State<TilesScreen> {
     return Image.file(imageFile);
   }
 
+  Future<ui.Image> convert(Image image) {
+    Completer<ui.Image> completer = Completer<ui.Image>();
+    image.image.resolve(ImageConfiguration()).addListener(
+      ImageStreamListener(
+        (ImageInfo info, bool _) {
+          completer.complete(info.image);
+        },
+      ),
+    );
+    return completer.future;
+  }
+
   @override
   Widget build(BuildContext context) {
     List<PageLayout> layouts =
@@ -36,8 +50,18 @@ class _TilesScreenState extends State<TilesScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => DrawScreen(
-                path: "/${widget.title}/${widget.page}/$index.png",
+              builder: (context) => FutureBuilder<ui.Image>(
+                future: convert(_getImage(index)),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return DrawScreen(
+                      path: "/${widget.title}/${widget.page}/$index.png",
+                      image: snapshot.data,
+                    );
+                  } else {
+                    return CircularProgressIndicator();
+                  }
+                },
               ),
             ),
           );
