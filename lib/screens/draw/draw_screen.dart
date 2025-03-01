@@ -4,6 +4,7 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:techarrow_mobile/screens/draw/collageCreator.dart';
 import 'package:techarrow_mobile/screens/draw/customPainter.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter/material.dart';
@@ -21,14 +22,10 @@ class DrawScreen extends StatefulWidget {
   final String path;
 
   @override
-  State<DrawScreen> createState() => _DrawScreenState(path);
+  State<DrawScreen> createState() => _DrawScreenState();
 }
 
 class _DrawScreenState extends State<DrawScreen> {
-  String path = "";
-
-  _DrawScreenState(this.path);
-
   ComicCell _painter = ComicCell();
 
   @override
@@ -145,26 +142,15 @@ class _DrawScreenState extends State<DrawScreen> {
           ui.Image image = await picture.toImage(
               540, 960); // width и height - это размеры изображения
 
-          Directory filePath = storage.getLocalDirectorySync("/$path/pictures");
-
-          if (!filePath.existsSync()) {
-            filePath.createSync(recursive: true);
-          }
-
           ByteData? byteData =
               await image.toByteData(format: ui.ImageByteFormat.png);
           Uint8List pngBytes = byteData!.buffer.asUint8List();
-          int index = storage.getFilesCount("/$path/pictures");
-
-          // Создаем директорию, если она не существует
-          filePath = storage.getLocalDirectorySync("/$path/pictures");
-          if (!filePath.existsSync()) {
-            filePath.createSync(recursive: true);
-          }
 
           // Сохраняем изображение в файл
-          File file = File('${filePath.path}/${index}.png');
+          File file = storage.getLocalFileSync(widget.path);
           await file.writeAsBytes(pngBytes);
+
+          //Создаём коллаж (превью)
 
           Navigator.of(context).pop();
 

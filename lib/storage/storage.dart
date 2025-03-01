@@ -1,6 +1,9 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:techarrow_mobile/storage/models/comics.dart';
 import 'package:techarrow_mobile/storage/models/page_layout.dart';
@@ -12,12 +15,18 @@ class ApplicationStorage {
     return directory.path;
   }
 
+  static late ByteData _previewImage;
+
   static String _localPathSync = "";
   static bool initialized = false;
 
   Future<File> getLocalFile(String path) async {
     return File('${await _localPath}/data/comics$path');
   }
+
+  ByteData get previewImage => _previewImage;
+  Uint8List get previewImageBytes => _previewImage.buffer
+      .asUint8List(_previewImage.offsetInBytes, _previewImage.lengthInBytes);
 
   Future<Directory> getLocalDirectory(String path) async {
     return Directory('${await _localPath}/data/comics$path');
@@ -33,6 +42,7 @@ class ApplicationStorage {
 
   Future<void> initialize() async {
     Directory dir = Directory('${await _localPath}/data');
+    _previewImage = await rootBundle.load("assets/preview.png");
     if (!(await dir.exists())) {
       dir.create();
     }
@@ -41,8 +51,6 @@ class ApplicationStorage {
       dir.create();
     }
     _localPathSync = await _localPath;
-    print(dir.path);
-    print(await getAllComics());
   }
 
   Future<void> createComics(String title) async {
@@ -93,11 +101,21 @@ class ApplicationStorage {
     dir.createSync();
 
     File info = getLocalFileSync("$path/layout.json");
+    File preview = getLocalFileSync("$path/preview.png");
 
+    preview.createSync();
+    preview.writeAsBytesSync(_previewImage.buffer
+        .asUint8List(_previewImage.offsetInBytes, _previewImage.lengthInBytes));
     info.createSync();
 
-    info.writeAsStringSync(json.encode(
-        PageLayout(images: [], height: height, width: height).toJson()));
+    info.writeAsStringSync(json.encode(PageLayout(
+            images: List.generate(height * width, (index) {
+              File file = getLocalFileSync("$path/$index.png");
+              return file.path;
+            }),
+            height: height,
+            width: height)
+        .toJson()));
   }
 
   List<ComicsInfo> getAllComics() {
@@ -118,8 +136,7 @@ class ApplicationStorage {
     return dir.listSync().length;
   }
 
-  List getComicsImages(String title) {
-    final Directory dir = getLocalDirectorySync("/$title/pictures");
-    return dir.listSync();
+  List getPagesPreviews(String title) {
+    return [];
   }
 }
