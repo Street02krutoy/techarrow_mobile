@@ -53,8 +53,8 @@ class _ComicsScreenState extends State<ComicsScreen> {
     final List<Widget> previews = [];
 
     for (final (index, _) in comicsPages.indexed) {
-      Image.file(ApplicationStorage()
-          .getLocalFileSync("/${widget.title}/$index/preview.png"));
+      previews.add(Image.file(ApplicationStorage()
+          .getLocalFileSync("/${widget.title}/$index/preview.png")));
     }
 
     return Scaffold(
@@ -131,22 +131,24 @@ class _ComicsScreenState extends State<ComicsScreen> {
               backgroundColor: Theme.of(context).focusColor,
               radius: 30,
               child: IconButton(
-                  onPressed: () {
-                    Navigator.of(context)
-                        .push(MaterialPageRoute(builder: (context) {
-                      return TilesScreen(
-                        title: widget.title,
-                        page: _page,
-                      );
-                    }));
-                    // try {
-                    //   //ApplicationStorage().createComicsPage(widget.title, 1, 2);
-                    //   print(ApplicationStorage().getAllComics());
-                    // } catch (e) {
-                    //   print(e);
-                    //   Fluttertoast.showToast(msg: "error $e");
-                    // }
-                  },
+                  onPressed: comicsPages.isEmpty
+                      ? null
+                      : () {
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(builder: (context) {
+                            return TilesScreen(
+                              title: widget.title,
+                              page: _page,
+                            );
+                          }));
+                          // try {
+                          //   //ApplicationStorage().createComicsPage(widget.title, 1, 2);
+                          //   print(ApplicationStorage().getAllComics());
+                          // } catch (e) {
+                          //   print(e);
+                          //   Fluttertoast.showToast(msg: "error $e");
+                          // }
+                        },
                   icon: const Icon(Icons.edit, size: 30)),
             ),
             CircleAvatar(
