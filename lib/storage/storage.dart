@@ -42,7 +42,7 @@ class ApplicationStorage {
 
   Future<void> initialize() async {
     Directory dir = Directory('${await _localPath}/data');
-    _previewImage = await rootBundle.load("assets/preview.png");
+    _previewImage = await rootBundle.load("assets/empty.png");
     if (!(await dir.exists())) {
       dir.create();
     }
@@ -142,10 +142,13 @@ class ApplicationStorage {
 
   Image getPreview(String title, double width, double height) {
     try {
-      return Image.file(getLocalFileSync("/$title/0/preview.png"),
-          width: width, height: height);
+      File file = getLocalFileSync("/$title/0/preview.png");
+      if (!file.existsSync()) {
+        return Image.asset("assets/empty.png", width: width, height: height);
+      }
+      return Image.file(file, width: width, height: height);
     } catch (e) {
-      return Image.asset("assets/preview.png", width: width, height: height);
+      return Image.asset("assets/empty.png", width: width, height: height);
     }
   }
 }

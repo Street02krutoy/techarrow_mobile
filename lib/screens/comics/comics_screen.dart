@@ -7,11 +7,13 @@ import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:techarrow_mobile/screens/comics/ui/create_page_dialog.dart';
 import 'package:techarrow_mobile/screens/comics/ui/delete_confirmation_dialog.dart';
+import 'package:techarrow_mobile/screens/draw/collageCreator.dart';
 import 'package:techarrow_mobile/screens/draw/draw_screen.dart';
 import 'package:techarrow_mobile/screens/main/main_screen.dart';
 import 'package:techarrow_mobile/screens/tiles/tiles_screen.dart';
 import 'package:techarrow_mobile/storage/models/page_layout.dart';
 import 'package:techarrow_mobile/storage/storage.dart';
+import 'package:image/image.dart' as img;
 
 class ComicsScreen extends StatefulWidget {
   const ComicsScreen({super.key, required this.title});
@@ -52,7 +54,20 @@ class _ComicsScreenState extends State<ComicsScreen> {
 
     final List<Widget> previews = [];
 
-    for (final (index, _) in comicsPages.indexed) {
+    for (final (index, val) in comicsPages.indexed) {
+      ApplicationStorage()
+          .getLocalFileSync("/${widget.title}/$index/preview.png")
+          .writeAsBytesSync(img.encodePng(CollageCreator(val.images.map((v) {
+            final file = File(v);
+            if (file.existsSync()) {
+              final bytes = file.readAsBytesSync();
+              final imag = Image.file(File(v));
+              return img.Image.fromBytes(
+                  imag.width?.toInt() ?? 1, imag.height?.toInt() ?? 1, bytes);
+            }
+            return img.Image(1, 1);
+          }).toList())
+              .createCollage()));
       previews.add(Image.file(ApplicationStorage()
           .getLocalFileSync("/${widget.title}/$index/preview.png")));
     }
