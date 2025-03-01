@@ -153,6 +153,7 @@ class _DrawScreenState extends State<DrawScreen> {
           //Создаём коллаж (превью)
 
           Navigator.of(context).pop();
+          Navigator.of(context).pop();
 
           print('Image saved to ${file.path}');
         },
