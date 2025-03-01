@@ -37,6 +37,9 @@ class _MainScreenState extends State<MainScreen> {
         2;
     final double itemWidth = size.width / (size.aspectRatio < 1 ? 2 : 4);
 
+    print(
+        ApplicationStorage().getPreview(_data[0].title, itemWidth, itemHeight));
+
     return Scaffold(
         appBar: AppBar(
           title: const Text("Мои комиксы"),
@@ -103,7 +106,8 @@ class _MainScreenState extends State<MainScreen> {
                               }));
                             },
                             child: ComicsCardWidget(
-                                image: ApplicationStorage().getPreview(comics.title, itemWidth, itemHeight),
+                                image: ApplicationStorage().getPreview(
+                                    comics.title, itemWidth, itemHeight),
                                 title: Text(
                                   comics.title,
                                   style: const TextStyle(

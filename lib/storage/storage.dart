@@ -53,7 +53,7 @@ class ApplicationStorage {
     _localPathSync = await _localPath;
   }
 
-  Future<void> createComics(String title) async {
+  Future createComics(String title) async {
     final Directory dir = getLocalDirectorySync("/$title");
     if (dir.existsSync()) {
       throw Exception("Comics alerady exists");
@@ -142,12 +142,15 @@ class ApplicationStorage {
 
   Image getPreview(String title, double width, double height) {
     try {
+      print(1211);
       File file = getLocalFileSync("/$title/0/preview.png");
       if (!file.existsSync()) {
+        print(222);
         return Image.asset("assets/empty.png", width: width, height: height);
       }
       return Image.file(file, width: width, height: height);
     } catch (e) {
+      print("AAA");
       return Image.asset("assets/empty.png", width: width, height: height);
     }
   }

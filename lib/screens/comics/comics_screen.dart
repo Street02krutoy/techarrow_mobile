@@ -68,13 +68,16 @@ class _ComicsScreenState extends State<ComicsScreen> {
             return img.Image(1, 1);
           }).toList())
               .createCollage()));
+
+      print(ApplicationStorage()
+          .getLocalFileSync("/${widget.title}/$index/preview.png"));
       previews.add(Image.file(ApplicationStorage()
           .getLocalFileSync("/${widget.title}/$index/preview.png")));
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Title ${widget.title}"),
+        title: Text(widget.title),
         centerTitle: true,
       ),
       body: Center(

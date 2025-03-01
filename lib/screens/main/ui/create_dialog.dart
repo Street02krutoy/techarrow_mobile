@@ -14,6 +14,8 @@ class CreateDialog {
         padding: const EdgeInsets.all(8),
         child: TextField(
           controller: _controller,
+          textAlign: TextAlign.center,
+          decoration: InputDecoration(hintText: "Введите название:"),
         ),
       ),
       actions: [
@@ -21,9 +23,9 @@ class CreateDialog {
             onPressed: () {
               Navigator.of(context).pop();
             },
-            child: const Text("Cancel")),
+            child: const Text("Отмена")),
         TextButton(
-            onPressed: () {
+            onPressed: () async {
               ApplicationStorage().createComics(_controller.text).then((val) {
                 Fluttertoast.showToast(msg: "ok");
                 if (context.mounted) Navigator.of(context).pop();
@@ -34,7 +36,7 @@ class CreateDialog {
                 if (context.mounted) Navigator.of(context).pop();
               });
             },
-            child: const Text("OK")),
+            child: const Text("Создать!")),
       ],
     );
   }
