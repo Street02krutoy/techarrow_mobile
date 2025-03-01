@@ -103,11 +103,7 @@ class _MainScreenState extends State<MainScreen> {
                               }));
                             },
                             child: ComicsCardWidget(
-                                image: Image.asset(
-                                  "assets/preview.png",
-                                  height: itemHeight,
-                                  width: itemWidth,
-                                ),
+                                image: ApplicationStorage().getPreview(comics.title, itemWidth, itemHeight),
                                 title: Text(
                                   comics.title,
                                   style: const TextStyle(
