@@ -140,12 +140,11 @@ class ApplicationStorage {
     return [];
   }
 
-  Image getPreview(String title, double width, double height){
-    try{
-      final Directory dir = getLocalDirectorySync("/$title/pictures");
-      return Image.file(File(dir.listSync().first.path), width: width, height: height);
-    }
-    catch(e){
+  Image getPreview(String title, double width, double height) {
+    try {
+      return Image.file(getLocalFileSync("/$title/0/preview.png"),
+          width: width, height: height);
+    } catch (e) {
       return Image.asset("assets/preview.png", width: width, height: height);
     }
   }
