@@ -29,6 +29,7 @@ class _TilesScreenState extends State<TilesScreen> {
         ApplicationStorage().getComicsPages(widget.title);
 
     PageLayout layout = layouts[widget.page];
+    print(layout.toJson().toString());
     List<Widget> tiles = List.generate(layout.height * layout.width, (index) {
       return InkWell(
         onTap: () {

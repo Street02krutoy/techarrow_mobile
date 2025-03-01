@@ -178,7 +178,13 @@ class _ComicsScreenState extends State<ComicsScreen> {
                         builder: (context) {
                           return DeleteConfirmationDialog().build(
                               context, widget.title,
-                              onDelete: () => {fetch()});
+                              onDelete: () => {
+                                    Navigator.of(context).pushAndRemoveUntil(
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const MainScreen()),
+                                        (route) => false)
+                                  });
                         });
                   },
                   icon: const Icon(Icons.delete, size: 30)),

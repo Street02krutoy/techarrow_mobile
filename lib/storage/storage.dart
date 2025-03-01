@@ -114,7 +114,7 @@ class ApplicationStorage {
               return file.path;
             }),
             height: height,
-            width: height)
+            width: width)
         .toJson()));
   }
 
