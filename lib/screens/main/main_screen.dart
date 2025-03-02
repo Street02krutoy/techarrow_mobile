@@ -37,8 +37,6 @@ class _MainScreenState extends State<MainScreen> {
         2;
     final double itemWidth = size.width / (size.aspectRatio < 1 ? 2 : 4);
 
-    print(
-        ApplicationStorage().getPreview(_data[0].title, itemWidth, itemHeight));
 
     return Scaffold(
         appBar: AppBar(
